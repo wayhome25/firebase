@@ -26,5 +26,3 @@ if (selectedKey){
 #### firebase deploy
 - firebase 호스팅 기능을 이용한 deploy 전세계 배포!
 - CLI 명령어 : `firebase deploy`
-#### 참고문서
--
