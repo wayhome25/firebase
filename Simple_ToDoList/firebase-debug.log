@@ -12,3 +12,17 @@
 [info] Public Directory: public
 [info] 
 [info] Server listening at: http://localhost:5000
+[debug] ----------------------------------------------------------------------
+[debug] Command:      /Users/Leehyunjoo/.nvm/versions/node/v6.9.1/bin/node /Users/Leehyunjoo/.nvm/versions/node/v6.9.1/bin/firebase serve
+[debug] CLI Version:  3.2.3
+[debug] Platform:     darwin
+[debug] Node Version: v6.9.1
+[debug] Time:         Mon Feb 13 2017 22:28:03 GMT+0900 (KST)
+[debug] ----------------------------------------------------------------------
+[debug] 
+[info] Starting Firebase development server...
+[info] 
+[info] Project Directory: /Users/Leehyunjoo/GitHub/firebase/Simple_ToDoList
+[info] Public Directory: public
+[info] 
+[info] Server listening at: http://localhost:5000
