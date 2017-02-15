@@ -3,36 +3,22 @@
 <head>
   <meta charset="utf-8">
   <title>Simple To-Do List</title>
-  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
   <link rel="stylesheet" href="/style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
+  <link rel="icon" href="/favicon.ico" >
 </head>
 <body>
+  <div class="log-out"><a onclick="logout()" class="right-align">sign-out</a></div>
   <div class="row header">
-    <h1 class="left-align col s12"><i class="material-icons">check</i> SIMPLE TO-DO LIST</h1>
-    <a onclick="logout()">sign-out</a>
+    <a href="https://simple-todolist.firebaseapp.com/"><h1 class="left-align col s12"><i class="material-icons">check</i>SIMPLE TO-DO LIST</h1></a>
   </div>
   <div class="container">
     <div class="row">
       <div class="col s6 offset-s3">
         <table class="bordered">
           <tbody>
-            <tr>
-              <td>
-                <input type="checkbox" class="filled-in" id="filled-in-box" checked="checked" />
-                <label for="filled-in-box">사이트 만들기</label>
-                <a><i class="material-icons">clear</i></a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <input type="checkbox" class="filled-in" id="filled-in-box+#key추가" checked="checked" />
-                <label for="filled-in-box+#key추가">파이어베이스 강의듣기</label>
-                <a><i class="material-icons">clear</i></a>
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
@@ -44,15 +30,15 @@
       </a>
       <ul>
         <li class="waves-effect waves-light">
-          <input id="input_text" class="col s4 offset-s4 input_to_do" type="text" data-length="10" placeholder=" character limit is 10. Enter to Save." required>
+          <input id="input_text" class="col s4 offset-s4 input_to_do" type="text" data-length="10" placeholder="Enter to Save" required>
         </li>
       </ul>
     </div>
   </div>
 </div>
 <!-- 스크립트 시작   -->
-<script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
 <script>
 // firebase 환경설정
@@ -66,6 +52,7 @@ var config = {
   messagingSenderId: "305467197720"
 };
 firebase.initializeApp(config);
+var database = firebase.database();
 var provider = new firebase.auth.GoogleAuthProvider();
 
 
@@ -74,42 +61,109 @@ firebase.auth().onAuthStateChanged(function(user){
   if (user){
     console.log('already login');
     userInfo = user; // 유저정보 저장
-    get_list();
+    get_list(); // 리스트 출력
   } else {
-    firebase.auth().signInWithPopup(provider); //로그인 팝업
-    console.log('new login')
+    // firebase.auth().signInWithPopup(provider); //로그인 팝업
+    // console.log('new login')
+      firebase.auth().signInWithPopup(provider).then(function(result){
+      var user_uid= result.user.uid;
+      var todoRef = database.ref('list/'+user_uid); // DB경로지정
+      todoRef.push({
+        description : "버튼을 눌러 새로운 할일을 추가해 보세요!",
+        status : false
+      });
+      todoRef.push({
+        description : "할일은 10자 이내로 입력 가능합니다",
+        status : false
+      });
+    })
+
   }
 })
-
-//리스트 출력
+//리스트 화면 출력
 function get_list(){
-  console.log(userInfo.uid);
-
+  var todoRef = database.ref('list/'+userInfo.uid); // DB경로지정
+  todoRef.on('child_added', on_child_added);
+  function on_child_added(data){
+    var key = data.key;
+    var todoData = data.val();
+    var txt = todoData.description;
+    var status = todoData.status;
+    // html 코드 내 이스케이프 문자 추가 필요
+    var input_check
+    if(status === true){input_check = "<input type=\"checkbox\" class=\"filled-in\" id=\"check-box"+key+"\" checked/>"}else{input_check = "<input type=\"checkbox\" class=\"filled-in\" id=\"check-box"+key+"\" />"}
+    var html = "<tr id='"+key+"'><td>"+input_check+
+               "<label for=\"check-box"+key+"\">"+ txt +"</label>" +
+               "<a onclick=\"delete_data('"+key+"')\"><i class=\"material-icons\">clear</i></a></td></tr>"
+    $('tbody').prepend(html); //jQuery 자식요소 1번으로 추가
+    $("#check-box"+key).change(function(){
+      if(this.checked){
+        todoRef = database.ref('list/'+userInfo.uid+'/'+key);
+        todoRef.update({
+          status :  true
+        })
+      }else{
+        todoRef = database.ref('list/'+userInfo.uid+'/'+key);
+        todoRef.update({
+          status :  false
+        })
+      }
+    })
+  }
 }
+
 
 // 저장
 $(function(){ // = $(document).ready(function() { ... });
-    $(".input_to_do").keypress(function(e) {
+    $(".input_to_do").keypress(function(e) { // 인풋창에서 엔터 입력시 저장함수 실행
       if(e.which == 13){
-        alert('Enter pressed')
         save_data();
       }
     })
 })
 
-function save_data(){
-  
+function save_data(){ // 입력한 데이터를 저장하고 화면에 출력
+  var todoRef = database.ref('list/'+userInfo.uid); // DB경로지정
+  var txt = $(".input_to_do").val(); // 입력값 txt 변수에 저장
+  if (txt === ''){
+    alert('내용을 입력해주세요.');
+    return; // 함수종료
+  }else if(txt.length > 10){
+    alert('to-do list는 10자 이내로만 입력 가능합니다.');
+    return; // 함수종료
+  }else{
+    todoRef.push({
+      status : false,
+      description : txt,
+    });
+    initMemo(); // 인풋창 초기화
+    alert('저장성공!');
+  }
+}
+
+// 삭제
+function delete_data(key){
+  if(!confirm('정말 삭제하시겠습니까?')){
+    return;
+  }
+  var todoRef = database.ref('list/'+userInfo.uid+'/'+key); // DB경로지정
+  todoRef.remove(); // DB 삭제기능
+  $("#"+key).remove(); // jQuery DOM 삭제기능
+}
+
+
+// 인풋창 초기화
+function initMemo(){
+  $(".input_to_do").val("");
 }
 
 //로그아웃
 function logout(){
+  $('tbody').children().remove(); // 리스트 DOM 삭제
   firebase.auth().signOut().then(function(){
-    console.log('sign-out successful');
-  }, function(error){
-    console.log('sign-out failed');
+    alert('로그아웃 성공!');
   });
 }
-
 
 </script>
 </body>

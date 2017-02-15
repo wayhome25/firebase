@@ -3,6 +3,8 @@
 ## 데이터 저장
 #### .push()
 - 데이터베이스 [레퍼런스 객체](https://firebase.google.com/docs/reference/js/firebase.database.Reference)의 [push 함수(메소드)](https://firebase.google.com/docs/reference/js/firebase.database.Reference#push)를 사용
+- A Reference represents a specific location in your Database and can be used for reading or writing data to that Database location.
+- You can reference the root or child location in your Database by calling firebase.database().ref() or firebase.database().ref("child/path").
 - 데이터 목록에 추가, push()를 호출할 때마다 Firebase에서 고유 식별자로도 사용할 수 있는 ***고유 키(예: user-posts/<user-id>/<unique-post-id>)*** 를 생성
 - textarea에 글이 있는 경우만 save를 하는 로직 추가
 - 함수 내에서 return이 들아가면 그 부분에서 함수는 종료

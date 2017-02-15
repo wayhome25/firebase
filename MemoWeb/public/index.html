@@ -102,7 +102,9 @@
         var memoRef = database.ref('memos/'+userInfo.uid);
 
         function on_child_added(data){
+
             var key = data.key;
+            console.log('하나만나오려나?',key)
             var memoData = data.val(); //.val()을 통해 해당 데이터의 값에 접근
             console.log('childData', key);
             console.log('childData', memoData);
