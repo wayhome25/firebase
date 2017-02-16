@@ -7,10 +7,13 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
   <link rel="stylesheet" href="/style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="icon" href="/favicon.ico" >
+  <link rel="shortcut icon" href="https://simple-todolist.firebaseapp.com/favicon.png">
+  <!-- <link href="https://www.google.co.kr/images/branding/product/ico/googleg_lodp.ico" rel="shortcut icon"> -->
 </head>
 <body>
-  <div class="log-out"><a onclick="logout()" class="right-align">sign-out</a></div>
+  <div class="log-out">
+    <a onclick="logout()" class="right-align logout">sign-out</a>
+  </div>
   <div class="row header">
     <a href="https://simple-todolist.firebaseapp.com/"><h1 class="left-align col s12"><i class="material-icons">check</i>SIMPLE TO-DO LIST</h1></a>
   </div>
@@ -25,7 +28,7 @@
     </div>
   <div class="row">
     <div class="fixed-action-btn toolbar">
-      <a class="btn-floating btn-large blue lighten-1">
+      <a class="btn-floating btn-large blue lighten-1 write-btn">
         <i class="large material-icons">mode_edit</i>
       </a>
       <ul>
@@ -63,23 +66,22 @@ firebase.auth().onAuthStateChanged(function(user){
     userInfo = user; // 유저정보 저장
     get_list(); // 리스트 출력
   } else {
-    // firebase.auth().signInWithPopup(provider); //로그인 팝업
-    // console.log('new login')
-      firebase.auth().signInWithPopup(provider).then(function(result){
-      var user_uid= result.user.uid;
-      var todoRef = database.ref('list/'+user_uid); // DB경로지정
-      todoRef.push({
-        description : "버튼을 눌러 새로운 할일을 추가해 보세요!",
-        status : false
-      });
-      todoRef.push({
-        description : "할일은 10자 이내로 입력 가능합니다",
-        status : false
+    firebase.auth().signInWithPopup(provider).then(function(result){
+    var user_uid= result.user.uid;
+    var todoRef = database.ref('list/'+user_uid); // DB경로지정
+    todoRef.push({
+      description : "버튼을 눌러 새로운 할일을 추가해 보세요!",
+      status : false
+    });
+    todoRef.push({
+      description : "할일은 10자 이내로 입력 가능합니다",
+      status : false
       });
     })
 
   }
 })
+
 //리스트 화면 출력
 function get_list(){
   var todoRef = database.ref('list/'+userInfo.uid); // DB경로지정
@@ -156,6 +158,8 @@ function delete_data(key){
 function initMemo(){
   $(".input_to_do").val("");
 }
+
+
 
 //로그아웃
 function logout(){

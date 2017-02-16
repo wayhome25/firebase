@@ -11,6 +11,13 @@
   margin-top: 10px;
   margin-right: 20px;
 }
+.log-out a{
+  margin-right: 10px;
+}
+.log-out a:hover{
+  color: salmon;
+}
+
 h1{
   margin-top: 10px;
   margin-bottom: 50px;
