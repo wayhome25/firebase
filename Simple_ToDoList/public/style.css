@@ -91,4 +91,42 @@ input[type="checkbox"]:checked+label{
   .row{
     margin-bottom: 0px;
   }
+
+  .btn-floating{
+    display: none;
+  }
+
+  .fixed-action-btn{
+  text-align: center;
+  width: 100%;
+  bottom: 0px;
+  left: 0px;
+  transition: transform 0.2s cubic-bezier(0.55, 0.085, 0.68, 0.53), background-color 0s linear 0.2s;
+  overflow: hidden;
+  background-color: rgb(66, 165, 245);
+  }
+
+  .fab-backdrop{
+    background-color: rgb(66, 165, 245); transform: scale(13.975); transition: transform 0.2s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  }
+
+  .fixed-action-btn.toolbar ul{
+    display: flex;
+    top: 0;
+    bottom: 0;
+    visibility: visible;
+  }
+
+  #input_text{
+    width: 100%;
+    margin: auto;
+  }
+
+  .character-counter{
+    right: 10%;
+  }
+
+  input[type="text"]{
+    font-size: 16px;
+  }
 }

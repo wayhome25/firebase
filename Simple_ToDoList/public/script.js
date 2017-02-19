@@ -2,30 +2,36 @@
 var userInfo;
 var database = firebase.database();
 var provider = new firebase.auth.GoogleAuthProvider();
+var auth = firebase.auth()
 
-
-//로그인
-firebase.auth().onAuthStateChanged(function(user){
+//로그인 -  수정후
+auth.onAuthStateChanged(function(user){
   if (user){
     console.log('already login');
     userInfo = user; // 유저정보 저장
     get_list(); // 리스트 출력
   } else {
-    firebase.auth().signInWithRedirect(provider).then(function(result){
-    var user_uid= result.user.uid;
-    var todoRef = database.ref('list/'+user_uid); // DB경로지정
-    todoRef.push({
-      description : "버튼을 눌러 새로운 할일을 추가해 보세요!",
-      status : false
-    });
-    todoRef.push({
-      description : "할일은 10자 이내로 입력 가능합니다",
-      status : false
-      });
-    });
-
+    alert('서비스 이용을 위해서 로그인이 필요합니다.');
+    auth.signInWithRedirect(provider);
   }
 });
+
+auth.getRedirectResult().then(function(result){
+
+  var user_uid= result.user.uid;
+  var todoRef = database.ref('list/'+user_uid); // DB경로지정
+  todoRef.push({
+    description : "버튼을 눌러 새로운 할일을 추가해 보세요!",
+    status : false
+  });
+  todoRef.push({
+    description : "할일은 20자 이내로 입력 가능합니다",
+    status : false
+    });
+});
+
+
+
 
 //리스트 화면 출력
 function get_list(){
@@ -62,11 +68,16 @@ function get_list(){
 
 // 저장
 $(function(){ // = $(document).ready(function() { ... });
-    $(".input_to_do").keypress(function(e) { // 인풋창에서 엔터 입력시 저장함수 실행
-      if(e.which == 13){
-        save_data();
+    // $(".input_to_do").keypress(function(e) { // 인풋창에서 엔터 입력시 저장함수 실행
+    //   if(e.which == 13){
+    //     save_data();
+    //   }
+    // });
+     $(".input_to_do").bind("keypress", function(e) { // 인풋창에서 엔터 입력시 저장함수 실행
+       if(e.which === 13){
+         save_data();
       }
-    });
+     });
 });
 
 function save_data(){ // 입력한 데이터를 저장하고 화면에 출력
@@ -109,7 +120,7 @@ function initMemo(){
 //로그아웃
 function logout(){
   $('tbody').children().remove(); // 리스트 DOM 삭제
-  firebase.auth().signOut().then(function(){
+  auth.signOut().then(function(){
     alert('로그아웃 성공!');
   });
 }
