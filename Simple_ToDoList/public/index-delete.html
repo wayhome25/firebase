@@ -21,6 +21,13 @@
   firebase.initializeApp(config);
   </script>
    <!-- // Firebase 초기화 끝 -->
+   <!-- firebase auth ui 시작 -->
+  <script src="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
+  <script src="bower_components/firebaseui/dist/firebaseui.js"></script>
+  <link type="text/css" rel="stylesheet" href="bower_components/firebaseui/dist/firebaseui.css" />
+  <!-- firebase auth ui 끝 -->
+
 </head>
 <body>
   <div class="log-out">
@@ -31,7 +38,7 @@
   </div>
   <div class="container">
     <div class="row">
-      <div id="table-wrap" class="col s6 offset-s3">
+      <div class="col s6 offset-s3">
         <table class="bordered">
           <tbody>
           </tbody>
@@ -53,7 +60,6 @@
 </div>
 <!-- 스크립트 시작   -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<!-- <script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
 <script src="./script.js"></script>
 <!-- 스크립트 끝   -->
